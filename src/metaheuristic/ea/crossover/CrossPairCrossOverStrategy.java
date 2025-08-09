@@ -3,6 +3,7 @@ package metaheuristic.ea.crossover;
 import base.OptimizationProblem;
 import metaheuristic.ea.base.CrossOverOperator;
 import metaheuristic.ea.base.CrossOverStrategy;
+import representation.AgeingIndividual;
 import representation.SimpleIndividual;
 import representation.base.Individual;
 import representation.base.Representation;
@@ -33,7 +34,7 @@ public class CrossPairCrossOverStrategy implements CrossOverStrategy {
                     for (int p2 = p1 + 1; p2 < parents.size(); p2++) {
                         List<Representation> oList = co.apply(problem, parents.get(p1).getRepresentation(), parents.get(p2).getRepresentation());
                         for (Representation r : oList) {
-                            offSprings.add(new SimpleIndividual(r, problem.cost(r)));
+                            offSprings.add(new AgeingIndividual(r, problem.cost(r)));
                         }
                     }
                 }

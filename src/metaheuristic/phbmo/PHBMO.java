@@ -5,8 +5,8 @@ import base.TerminalCondition;
 import exceptions.InvalidParameters;
 import metaheuristic.AbstractMetaheuristic;
 import metaheuristic.AbstractSMetaheuristic;
+import metaheuristic.BaseSIterationEvent;
 import metaheuristic.MetaHeuristic;
-import metaheuristic.ea.EAIterationEvent;
 import metaheuristic.ea.EAService;
 import metaheuristic.ea.base.CrossOverOperator;
 import metaheuristic.ea.base.ParentSelector;
@@ -103,6 +103,7 @@ public class PHBMO extends AbstractMetaheuristic
         iterationCount =0;
         drones = generateInitialPopulation(problem,solutionGenerator,dr);
         Queen queen = new Queen(drones.getBest());
+        this.solutionGenerator = solutionGenerator;
 
         while (!terminalCondition.isSatisfied(this,problem))
         {
@@ -118,7 +119,7 @@ public class PHBMO extends AbstractMetaheuristic
 
 
             iterationCount++;
-            fireIterationEvent(new EAIterationEvent(iterationCount,getNeighboringCount(), bestKnownCost,bestKnownSolution));
+            fireIterationEvent(new BaseSIterationEvent(iterationCount,getNeighboringCount(), bestKnownCost,bestKnownSolution));
 
         }
         printBest();

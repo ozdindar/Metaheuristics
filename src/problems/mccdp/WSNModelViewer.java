@@ -1,6 +1,7 @@
 package problems.mccdp;
 
 import gui.MHViewer;
+
 import metaheuristic.IterationEvent;
 import representation.IntegerPermutation;
 import representation.IntegerVector;

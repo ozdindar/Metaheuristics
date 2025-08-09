@@ -4,10 +4,13 @@ package representation.base;
  * Created by dindar.oz on 22.04.2015.
  */
 public interface Individual {
-    public double getCost();
-    public Representation getRepresentation();
+    double getCost();
+    Representation getRepresentation();
 
-    public Individual clone();
+    Individual clone();
 
-    public void update(Representation rep,double cost);
+    void update(Representation rep,double cost);
+
+    default int getAge() {return 0;} // By default we ageing
+    default void age(){};
 }

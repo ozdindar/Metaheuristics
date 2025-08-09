@@ -1,6 +1,7 @@
 package metaheuristic.sos;
 
 import metaheuristic.IterationEvent;
+
 import metaheuristic.MetaHeuristicListener;
 
 /**

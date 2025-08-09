@@ -5,4 +5,5 @@ package metaheuristic.sa;
  */
 public interface CoolingSchedule {
     double updateTemperature(double t);
+    void init();
 }

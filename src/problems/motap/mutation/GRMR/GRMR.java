@@ -4,7 +4,7 @@ import base.OptimizationProblem;
 import metaheuristic.ea.base.MutationOperator;
 import problems.motap.IProcessor;
 import problems.motap.MOTAProblem;
-import problems.motap.Pair;
+import util.Pair;
 import representation.IntegerAssignment;
 import representation.base.Representation;
 import util.random.RandUtil;

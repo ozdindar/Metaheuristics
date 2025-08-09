@@ -4,8 +4,8 @@ import base.OptimizationProblem;
 import base.TerminalCondition;
 import exceptions.InvalidParameters;
 import metaheuristic.AbstractMetaheuristic;
+import metaheuristic.BaseSIterationEvent;
 import metaheuristic.MetaHeuristic;
-import metaheuristic.ea.EAIterationEvent;
 import metaheuristic.ea.EAService;
 import problems.base.InitialSolutionGenerator;
 import representation.base.Individual;
@@ -74,7 +74,7 @@ public class GenericIsland extends AbstractMetaheuristic
 
             Individual best = getGlobalBest();
             updateBestIfNecessary(best.getRepresentation(),best.getCost());
-            fireIterationEvent(new EAIterationEvent(iterationCount,getNeighboringCount(), best.getCost(),best.getRepresentation()));
+            fireIterationEvent(new BaseSIterationEvent(iterationCount,getNeighboringCount(), best.getCost(),best.getRepresentation()));
             iterationCount++;
         }
 

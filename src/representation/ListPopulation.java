@@ -7,6 +7,8 @@ import util.PopulationUtil;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 /**
  * Created by dindar.oz on 25.06.2015.
@@ -27,6 +29,7 @@ public class ListPopulation implements Population {
 
     public ListPopulation(List<Individual> sublist) {
         population = sublist;
+        best = PopulationUtil.bestIndividual(population);
     }
 
     /*public ListPopulation(List<Individual> sublist) {
@@ -78,6 +81,8 @@ public class ListPopulation implements Population {
 
     private void updateBestIfNecessary(Individual i)
     {
+        if (i==null)
+            return;
         if (best ==null || best.getCost()>i.getCost())
         {
             best = i.clone();
@@ -86,6 +91,8 @@ public class ListPopulation implements Population {
 
     @Override
     public void add(Population p) {
+        if (p.isEmpty())
+            return;
         updateBestIfNecessary(p.getBest());
         population.addAll(p.getIndividuals());
     }
@@ -160,6 +167,21 @@ public class ListPopulation implements Population {
     public void clear() {
         population.clear();
         best = null;
+    }
+
+    @Override
+    public void removeIf(Predicate<Individual> filter) {
+        boolean bestRemoved =  (filter.test(best));
+
+        population.removeIf(filter);
+
+        if (bestRemoved)
+            best = PopulationUtil.bestIndividual(population);
+    }
+
+    @Override
+    public void forEach(Consumer<Individual> consumer) {
+        population.forEach(consumer);
     }
 
 

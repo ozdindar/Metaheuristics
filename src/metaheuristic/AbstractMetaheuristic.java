@@ -5,7 +5,6 @@ package metaheuristic;
 import base.OptimizationProblem;
 import base.TerminalCondition;
 import metaheuristic.aco.ACO;
-import metaheuristic.ea.EAIterationEvent;
 import problems.base.InitialSolutionGenerator;
 import representation.base.Representation;
 
@@ -128,12 +127,12 @@ public abstract class AbstractMetaheuristic implements MetaHeuristic{
     protected synchronized void increaseNeighboringCount()
     {
         neighboringCount++;
-        fireIterationEvent(new EAIterationEvent(neighboringCount,neighboringCount,bestKnownCost,bestKnownSolution));
+
     }
     protected synchronized void increaseNeighboringCount(int c)
     {
         neighboringCount+=c;
-        fireIterationEvent(new EAIterationEvent(neighboringCount,neighboringCount,bestKnownCost,bestKnownSolution));
+
     }
 
     @Override
@@ -182,7 +181,7 @@ public abstract class AbstractMetaheuristic implements MetaHeuristic{
         }
     }
 
-    private void logEnd() {
+    protected void logEnd() {
         String traceFileName = getName()+"_trace.txt";
         String line = "END "+ System.currentTimeMillis()+"\n";
         try {
@@ -195,7 +194,7 @@ public abstract class AbstractMetaheuristic implements MetaHeuristic{
             Logger.getLogger(ACO.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    List<MetaHeuristicListener> listeners= new ArrayList<>();
+    protected List<MetaHeuristicListener> listeners= new ArrayList<>();
 
     public void addListener(MetaHeuristicListener listener)
     {
@@ -225,21 +224,5 @@ public abstract class AbstractMetaheuristic implements MetaHeuristic{
         return bestKnownCost+"";
     }
 
-/*    public void solve(OptimizationProblem problem)
-    {
-        init();
-
-        while (!isTerminated(problem))
-        {
-            iterate(problem);
-        }
-        printBest();
-    }
-
-    protected abstract void iterate(OptimizationProblem problem);
-
-    protected abstract boolean isTerminated(OptimizationProblem problem);
-
-    protected abstract void init();*/
 
 }

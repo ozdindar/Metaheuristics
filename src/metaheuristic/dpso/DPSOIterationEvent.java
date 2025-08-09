@@ -1,14 +1,14 @@
 package metaheuristic.dpso;
 
-import metaheuristic.AbstractIterationEvent;
+import metaheuristic.BaseSIterationEvent;
 import representation.base.Representation;
 
 /**
  * Created by dindar.oz on 25.06.2015.
  */
-public class DPSOIterationEvent extends AbstractIterationEvent {
+public class DPSOIterationEvent extends BaseSIterationEvent {
     public DPSOIterationEvent(int iterationCount, long neighboringCount, double bestKnownCost, Representation bestKnownSolution) {
-        super(iterationCount,neighboringCount,bestKnownCost,bestKnownSolution);
+        super(iterationCount,neighboringCount,bestKnownCost,bestKnownSolution,0.0,null);
     }
 
     @Override

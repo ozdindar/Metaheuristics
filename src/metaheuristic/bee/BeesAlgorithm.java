@@ -3,7 +3,7 @@ package metaheuristic.bee;
 import base.OptimizationProblem;
 import base.TerminalCondition;
 import metaheuristic.AbstractMetaheuristic;
-import metaheuristic.ea.EAIterationEvent;
+import metaheuristic.BaseSIterationEvent;
 import metaheuristic.ea.base.MutationOperator;
 import problems.base.InitialSolutionGenerator;
 import representation.ListPopulation;
@@ -83,20 +83,20 @@ public class BeesAlgorithm extends AbstractMetaheuristic
 
         while (!terminalCondition.isSatisfied(this,bees,problem))
         {
-            Population nextGen = generateNextGeneration(problem,bees);
+            Population nextGen = generateNextGeneration(problem,bees,solutionGenerator);
 
             bees = nextGen;
             iterationCount++;
 
             Individual best = bees.getBest();
             updateBestIfNecessary(best.getRepresentation(),best.getCost());
-            fireIterationEvent(new EAIterationEvent(iterationCount,getNeighboringCount(), best.getCost(),best.getRepresentation()));
+            fireIterationEvent(new BaseSIterationEvent(iterationCount,getNeighboringCount(), best.getCost(),best.getRepresentation()));
             //System.out.println(iterationCount+"-iteration: Average-F:"+ PopulationUtil.averageFitness(population.getIndividuals())+"  Best-F:"+ population.getBest());
         }
         printBest();
     }
 
-    private Population generateNextGeneration(OptimizationProblem problem, Population bees) {
+    private Population generateNextGeneration(OptimizationProblem problem, Population bees, InitialSolutionGenerator solutionGenerator) {
 
         List<Population> patches = generatePatches(problem,bees);
 

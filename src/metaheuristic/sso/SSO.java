@@ -5,10 +5,10 @@ import base.OptimizationProblem;
 import base.TerminalCondition;
 import exceptions.InvalidParameters;
 import metaheuristic.AbstractMetaheuristic;
+import metaheuristic.BaseSIterationEvent;
 import metaheuristic.MetaHeuristic;
 import metaheuristic.ea.EAService;
 import metaheuristic.island.IslandModul;
-import metaheuristic.tabu.TabuIterationEvent;
 import problems.base.InitialSolutionGenerator;
 import representation.CostBasedComparator;
 import representation.SimpleIndividual;
@@ -140,7 +140,7 @@ public class SSO extends AbstractMetaheuristic implements IslandModul {
         {
             updateParticles(problem);
             iterationCount++;
-            fireIterationEvent(new TabuIterationEvent(iterationCount,getNeighboringCount(),bestKnownCost,bestKnownSolution));
+            fireIterationEvent(new BaseSIterationEvent(iterationCount,getNeighboringCount(),bestKnownCost,bestKnownSolution));
         }
 
         printBest();

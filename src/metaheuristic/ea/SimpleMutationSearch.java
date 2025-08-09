@@ -4,6 +4,7 @@ import base.OptimizationProblem;
 import base.TerminalCondition;
 import exceptions.InvalidParameters;
 import metaheuristic.AbstractMetaheuristic;
+import metaheuristic.BaseSIterationEvent;
 import metaheuristic.MetaHeuristic;
 import metaheuristic.ea.base.MutationOperator;
 import metaheuristic.ea.base.MutationStrategy;
@@ -11,6 +12,7 @@ import metaheuristic.ea.base.VictimSelector;
 import metaheuristic.ea.mutation.SimpleMutationStrategy;
 import metaheuristic.ea.victimselector.SimpleVictimSelector;
 import problems.base.InitialSolutionGenerator;
+import representation.AgeingIndividual;
 import representation.ListPopulation;
 import representation.SimpleIndividual;
 import representation.base.Individual;
@@ -57,7 +59,7 @@ public class SimpleMutationSearch extends AbstractMetaheuristic {
         Population initialPopulation = new ListPopulation();
         for(Representation r: initialStates)
         {
-            Individual i = new SimpleIndividual(r,problem.cost(r));
+            Individual i = new AgeingIndividual(r,problem.cost(r));
             initialPopulation.add(i);
             updateBestIfNecessary(i.getRepresentation(),i.getCost());
             increaseNeighboringCount();
@@ -120,7 +122,7 @@ public class SimpleMutationSearch extends AbstractMetaheuristic {
 
             Individual best = population.getBest();
             updateBestIfNecessary(best.getRepresentation(),best.getCost());
-            fireIterationEvent(new EAIterationEvent(iterationCount,getNeighboringCount(), best.getCost(),best.getRepresentation()));
+            fireIterationEvent(new BaseSIterationEvent(iterationCount,getNeighboringCount(), bestKnownCost,bestKnownSolution ,best.getCost(),best.getRepresentation()));
 
         }
 

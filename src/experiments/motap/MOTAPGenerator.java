@@ -3,6 +3,7 @@ package experiments.motap;
 
 import problems.motap.Module;
 import problems.motap.*;
+import util.Pair;
 import util.random.RandUtil;
 
 import java.io.IOException;

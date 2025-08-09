@@ -1,13 +1,21 @@
 package representation;
 
 import metaheuristic.pso.base.Velocity;
+import representation.base.Array;
 import representation.base.Representation;
+import util.ArrayUtil;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.DoubleStream;
 
 
 /**
  * Created by dindar.oz on 03.06.2015.
  */
-public class DoubleVector implements Representation,Velocity {
+public class DoubleVector implements Representation,Velocity, Array<Double> {
 
     double[] values;
 
@@ -146,5 +154,85 @@ public class DoubleVector implements Representation,Velocity {
     public void set(int index,double value)
     {
         values[index] = value;
+    }
+
+    @Override
+    public Double get(int i) {
+        return values[i];
+    }
+
+    @Override
+    public List<Double> getList() {
+        return DoubleStream.of(values).boxed().collect(Collectors.toList());
+    }
+
+    @Override
+    public void setList(List<Double> values) {
+        this.values = values.stream().mapToDouble(Double::doubleValue).toArray();
+    }
+
+    @Override
+    public void set(int i, Double v) {
+        set(i,v.doubleValue());
+    }
+
+    @Override
+    public void swap(int i, int j) {
+        double tmp= values[i];
+        values[i]= values[j];
+        values[j] = values[i];
+    }
+
+    @Override
+    public void move(int from, int to) {
+        if (from == to)
+            return;
+        if (from >to )
+        {
+            for (int i=from ;i>to;i--)
+            {
+                swap(i,i-1);
+            }
+        }
+        else
+        {
+            for (int i=from ;i<to;i++)
+            {
+                swap(i,i+1);
+            }
+        }
+    }
+
+    @Override
+    public int getLength() {
+        return values.length;
+    }
+
+    @Override
+    public boolean exists(Double v) {
+        for (int i = 0; i < values.length; i++) {
+            if (values[i]== v)
+                return true;
+        }
+        return false;
+    }
+
+    @Override
+    public int firstOf(Double v) {
+        for (int i = 0; i < values.length; i++) {
+            if (values[i]== v)
+                return i;
+        }
+        return -1;
+    }
+
+    @Override
+    public Array<Double> cloneArray() {
+        return (Array<Double>) clone();
+    }
+
+    @Override
+    public String toString() {
+        return ArrayUtil.formatDoubleArray(values,3);
     }
 }

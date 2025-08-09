@@ -4,8 +4,8 @@ import base.OptimizationProblem;
 import base.TerminalCondition;
 import exceptions.InvalidParameters;
 import metaheuristic.AbstractMetaheuristic;
+import metaheuristic.BaseSIterationEvent;
 import metaheuristic.MetaHeuristic;
-import metaheuristic.ea.EAIterationEvent;
 import metaheuristic.ea.EAService;
 import metaheuristic.ea.base.MutationOperator;
 import metaheuristic.island.IslandModul;
@@ -166,7 +166,7 @@ public class MBO extends AbstractMetaheuristic implements IslandModul
 
             iterationCount++;
 
-            fireIterationEvent(new EAIterationEvent(iterationCount,getNeighboringCount(), bestKnownCost,bestKnownSolution));
+            fireIterationEvent(new BaseSIterationEvent(iterationCount,getNeighboringCount(), bestKnownCost,bestKnownSolution));
             //System.out.println(iterationCount+"-iteration: Average-F:"+ PopulationUtil.averageFitness(population.getIndividuals())+"  Best-F:"+ population.getBest());
         }
         printBest();
@@ -395,7 +395,7 @@ public class MBO extends AbstractMetaheuristic implements IslandModul
 
             iterationCount++;
 
-            fireIterationEvent(new EAIterationEvent(iterationCount,getNeighboringCount(), bestKnownCost,bestKnownSolution));
+            fireIterationEvent(new BaseSIterationEvent(iterationCount,getNeighboringCount(), bestKnownCost,bestKnownSolution));
             //System.out.println(iterationCount+"-iteration: Average-F:"+ PopulationUtil.averageFitness(population.getIndividuals())+"  Best-F:"+ population.getBest());
         }
 

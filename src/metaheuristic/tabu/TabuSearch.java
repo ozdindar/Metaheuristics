@@ -91,7 +91,7 @@ public class TabuSearch extends AbstractSMetaheuristic {
 
             iterationCount++;
             globalIterationCount++;
-            fireIterationEvent(new TabuIterationEvent(iterationCount,getNeighboringCount(),bestKnownCost,bestKnownSolution));
+            fireIterationEvent(new TabuIterationEvent(iterationCount,getNeighboringCount(),bestKnownCost,bestKnownSolution, currentSolution.getCost(), currentSolution.getRepresentation()));
 
             if (intensificationRequired())
             {

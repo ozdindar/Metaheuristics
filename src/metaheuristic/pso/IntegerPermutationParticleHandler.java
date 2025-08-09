@@ -1,7 +1,7 @@
 package metaheuristic.pso;
 
 
-import metaheuristic.pso.base.PSOProblem;
+import metaheuristic.pso.base.ContinousProblem;
 import metaheuristic.pso.base.ParticleHandler;
 import metaheuristic.pso.base.Velocity;
 import org.apache.commons.math3.util.Pair;
@@ -23,7 +23,7 @@ public class IntegerPermutationParticleHandler implements ParticleHandler {
         return IntegerPermutation.class;
     }
 
-    public Velocity generateInitialVelocity(PSOProblem problem, int length)
+    public Velocity generateInitialVelocity(ContinousProblem problem, int length)
     {
         int steps = RandUtil.randInt(MAX_INITIAL_STEP);
 

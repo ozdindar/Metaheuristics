@@ -3,7 +3,7 @@ package metaheuristic.grasp;
 import base.OptimizationProblem;
 import base.TerminalCondition;
 import metaheuristic.AbstractSMetaheuristic;
-import metaheuristic.tabu.TabuIterationEvent;
+import metaheuristic.BaseSIterationEvent;
 import problems.base.InitialSolutionGenerator;
 import representation.SimpleIndividual;
 
@@ -42,7 +42,7 @@ public class Grasp extends AbstractSMetaheuristic {
 
 
             localSearch.setCurrentSolution(null);
-            fireIterationEvent(new TabuIterationEvent(iterationCount,getNeighboringCount(),bestKnownCost,bestKnownSolution));
+            fireIterationEvent(new BaseSIterationEvent(iterationCount,getNeighboringCount(),bestKnownCost,bestKnownSolution,currentSolution.getCost(),currentSolution.getRepresentation()));
         }
 
     }

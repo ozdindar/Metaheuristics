@@ -7,12 +7,12 @@ import base.TerminalCondition;
 import exceptions.InvalidParameters;
 import metaheuristic.AbstractMetaheuristic;
 import metaheuristic.AbstractSMetaheuristic;
+import metaheuristic.BaseSIterationEvent;
 import metaheuristic.MetaHeuristic;
 import metaheuristic.ea.EAService;
 import metaheuristic.ea.base.CrossOverOperator;
 import metaheuristic.island.IslandModul;
 import metaheuristic.ls.LocalSearch;
-import metaheuristic.tabu.TabuIterationEvent;
 import problems.base.InitialSolutionGenerator;
 import problems.motap.crossover.SimpleMOTACrossOver;
 import problems.motap.mutation.GRMR.GRMRNF;
@@ -153,7 +153,7 @@ public class ScatterSearch extends AbstractMetaheuristic implements IslandModul 
 
             improvePopulation(problem,solutionGenerator);
             iterationCount++;
-            fireIterationEvent(new TabuIterationEvent(iterationCount,getNeighboringCount(),bestKnownCost,bestKnownSolution));
+            fireIterationEvent(new BaseSIterationEvent(iterationCount,getNeighboringCount(),bestKnownCost,bestKnownSolution, population.getBestCost(),population.getBest().getRepresentation()));
         }
 
         printBest();

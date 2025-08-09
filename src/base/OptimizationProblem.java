@@ -7,12 +7,17 @@ import representation.base.Representation;
  */
 public interface OptimizationProblem {
 
-    //List<Representation> generateInitialStates(int c);
-    //List<Representation> generateInitialStates( RNG rng, int c);
+    // Returnss if the given solution is feasible
     boolean isFeasible(Representation i);
+
+    // returns the objective value of the given solution
     double cost(Representation i) ;
 
+    // reeturns the maximum distance(difference) possible between any two solutions
     double maxDistance();
+
+    // (If applicable) returns the dimension count
+    default int getDimension(){ return 0;}
 
 
 }

@@ -8,5 +8,5 @@ import representation.base.Representation;
  */
 public interface MutationOperator {
     public Representation apply(OptimizationProblem problem, Representation i);
-    int neighboringCount();
+    default int neighboringCount() {return 1;};
 }

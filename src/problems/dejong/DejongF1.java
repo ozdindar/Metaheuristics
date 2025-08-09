@@ -1,14 +1,14 @@
 package problems.dejong;
 
 import exceptions.InvalidIndividual;
-import metaheuristic.pso.base.PSOProblem;
+import metaheuristic.pso.base.ContinousProblem;
 import representation.DoubleVector;
 import representation.base.Representation;
 
 /**
  * Created by dindar.oz on 28.12.2015.
  */
-public class DejongF1 implements PSOProblem {
+public class DejongF1 implements ContinousProblem {
 
     public static final double MAX_X = 5.12;
     public static final double MIN_X = -5.12;
@@ -65,12 +65,12 @@ public class DejongF1 implements PSOProblem {
     }
 
     @Override
-    public double getUpperBound() {
+    public double getUpperBound(int d) {
         return MAX_X;
     }
 
     @Override
-    public double getLowerBound() {
+    public double getLowerBound(int d) {
         return MIN_X;
     }
 }

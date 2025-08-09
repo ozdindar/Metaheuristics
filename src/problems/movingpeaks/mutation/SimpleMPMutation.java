@@ -35,7 +35,7 @@ public class SimpleMPMutation implements MutationOperator{
 
         int  c = RandUtil.randInt(dv.getValues().length);
         double v= dv.getValues()[c];
-        double maxChange = (mp.getUpperBound()-mp.getLowerBound())*magnitude;
+        double maxChange = (mp.getUpperBound(c)-mp.getLowerBound(c))*magnitude;
         double change = RandUtil.randDouble(maxChange/2,maxChange);
         if (RandUtil.rollDice(0.5))
             change *=-1;

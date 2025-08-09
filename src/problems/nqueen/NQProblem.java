@@ -3,14 +3,14 @@ package problems.nqueen;
 import base.OptimizationProblem;
 import exceptions.InvalidIndividual;
 import exceptions.WrongIndividualType;
-import metaheuristic.pso.base.PSOProblem;
+import metaheuristic.pso.base.ContinousProblem;
 import representation.*;
 import representation.base.Representation;
 
 /**
  * Created by dindar.oz on 28.05.2015.
  */
-public class NQProblem implements OptimizationProblem,PSOProblem {
+public class NQProblem implements OptimizationProblem, ContinousProblem {
 
     int n;
 
@@ -76,12 +76,12 @@ public class NQProblem implements OptimizationProblem,PSOProblem {
     }
 
     @Override
-    public double getUpperBound() {
+    public double getUpperBound(int d) {
         return n;
     }
 
     @Override
-    public double getLowerBound() {
+    public double getLowerBound(int d) {
         return 0;
     }
 }

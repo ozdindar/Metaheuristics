@@ -4,8 +4,8 @@ import base.OptimizationProblem;
 import base.TerminalCondition;
 import exceptions.InvalidParameters;
 import metaheuristic.AbstractMetaheuristic;
+import metaheuristic.BaseSIterationEvent;
 import metaheuristic.MetaHeuristic;
-import metaheuristic.ea.EAIterationEvent;
 import metaheuristic.ea.EAService;
 import metaheuristic.ea.base.MutationOperator;
 import metaheuristic.ea.base.VictimSelector;
@@ -160,12 +160,12 @@ public class ES extends AbstractMetaheuristic {
 
             if (immigrationPeriod>0 && (iterationCount %immigrationPeriod ==0) )
             {
-                acceptImmigrants(problem,population);
+                acceptImmigrants(problem,population,solutionGenerator);
             }
 
             Individual best = population.getBest();
             updateBestIfNecessary(best.getRepresentation(),best.getCost());
-            fireIterationEvent(new EAIterationEvent(iterationCount,getNeighboringCount(), best.getCost(),best.getRepresentation()));
+            fireIterationEvent(new BaseSIterationEvent(iterationCount,getNeighboringCount(), best.getCost(),best.getRepresentation(),population.getBestCost(),population.getBest().getRepresentation()));
             //System.out.println(iterationCount+"-iteration: Average-F:"+ PopulationUtil.averageFitness(population.getIndividuals())+"  Best-F:"+ population.getBest());
         }
 
@@ -173,11 +173,11 @@ public class ES extends AbstractMetaheuristic {
 
     }
 
-    private void acceptImmigrants(OptimizationProblem problem, Population population) {
+    private void acceptImmigrants(OptimizationProblem problem, Population population, InitialSolutionGenerator solutionGenerator) {
 
         int immigrantCount = mu/2;
         removeVictims(problem,population.getIndividuals(),immigrantCount);
-        Population immigrants= generateInitialPopulation(problem,solutionGenerator,immigrantCount);
+        Population immigrants= generateInitialPopulation(problem, solutionGenerator,immigrantCount);
         population.add(immigrants);
     }
 

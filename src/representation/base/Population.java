@@ -4,6 +4,8 @@ import representation.CostBasedComparator;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 /**
  * Created by dindar.oz on 25.06.2015.
@@ -32,4 +34,8 @@ public interface Population {
     Population subPopulation(int i, int i1);
 
     void clear();
+
+    void removeIf(Predicate<Individual> filter);
+
+    void forEach(Consumer<Individual> consumer);
 }

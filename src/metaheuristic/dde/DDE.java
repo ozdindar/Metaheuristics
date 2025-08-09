@@ -8,6 +8,7 @@ import base.OptimizationProblem;
 import base.TerminalCondition;
 import exceptions.InvalidParameters;
 import metaheuristic.AbstractMetaheuristic;
+import metaheuristic.BaseSIterationEvent;
 import metaheuristic.MetaHeuristic;
 import metaheuristic.ea.EAService;
 import metaheuristic.ea.base.CrossOverOperator;
@@ -79,7 +80,7 @@ public class DDE extends AbstractMetaheuristic {
         while (!terminalCondition.isSatisfied(this,population,problem)) {
             population = generateNextGeneration(problem, population);
             iterationCount++;
-            fireIterationEvent(new DDEIterationEvent(iterationCount,getNeighboringCount(), bestKnownCost,bestKnownSolution));
+            fireIterationEvent(new BaseSIterationEvent(iterationCount,getNeighboringCount(), bestKnownCost,bestKnownSolution));
         }
 
         printBest();

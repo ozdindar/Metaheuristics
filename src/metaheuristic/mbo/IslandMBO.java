@@ -157,7 +157,7 @@ public class IslandMBO extends AbstractMetaheuristic
     		//synchronize
             migrateIslands();
 
-            fireIterationEvent(new EAIterationEvent(iterationCount,getNeighboringCount(), bestKnownCost,bestKnownSolution));
+            fireIterationEvent(new EAIterationEvent(iterationCount,getNeighboringCount(), bestKnownCost,bestKnownSolution,0.0,null));
             //System.out.println(iterationCount+"-iteration: Average-F:"+ PopulationUtil.averageFitness(population.getIndividuals())+"  Best-F:"+ population.getBest());
         }
         printBest();

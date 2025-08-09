@@ -1,4 +1,4 @@
-package problems.motap;
+package util;
 
 import java.io.Serializable;
 

@@ -3,6 +3,7 @@ package util;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by oz on 16.07.2015.
@@ -75,5 +76,21 @@ public class ArrayUtil {
             target[i] = Arrays.copyOf(src[i],src[i].length);
         }
         return target;
+    }
+
+    public static String formatDoubleArray(double[] array, int decimals) {
+        if (decimals < 0) throw new IllegalArgumentException("Decimal places must be non-negative.");
+
+        String formatString = "%." + decimals + "f";
+        StringBuilder sb = new StringBuilder();
+        sb.append("[");
+        for (int i = 0; i < array.length; i++) {
+            sb.append(String.format(Locale.US, formatString, array[i]));
+            if (i < array.length - 1) {
+                sb.append(", ");
+            }
+        }
+        sb.append("]");
+        return sb.toString();
     }
 }

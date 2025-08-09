@@ -1,5 +1,6 @@
 package gui;
 
+
 import metaheuristic.IterationEvent;
 import metaheuristic.MetaHeuristicListener;
 import org.jfree.data.xy.XYSeries;

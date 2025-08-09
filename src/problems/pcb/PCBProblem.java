@@ -2,13 +2,13 @@ package problems.pcb;
 
 
 import base.OptimizationProblem;
-import metaheuristic.pso.base.PSOProblem;
+import metaheuristic.pso.base.ContinousProblem;
 import representation.IntegerPermutation;
 import representation.base.Representation;
 
 import java.util.HashMap;
 
-public class PCBProblem implements OptimizationProblem,PSOProblem {
+public class PCBProblem implements OptimizationProblem, ContinousProblem {
 
     private PCBData data;
     private int k;
@@ -92,12 +92,12 @@ public class PCBProblem implements OptimizationProblem,PSOProblem {
     }
 
     @Override
-    public double getUpperBound() {
+    public double getUpperBound(int d) {
         return getN();
     }
 
     @Override
-    public double getLowerBound() {
+    public double getLowerBound(int d) {
         return 0;
     }
 }

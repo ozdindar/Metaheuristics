@@ -2,7 +2,9 @@ package metaheuristic.ls;
 
 import base.NeighboringFunction;
 import base.OptimizationProblem;
+import base.TerminalCondition;
 import metaheuristic.AbstractSMetaheuristic;
+import metaheuristic.BaseSIterationEvent;
 import problems.base.InitialSolutionGenerator;
 import representation.base.Individual;
 import util.random.RandUtil;
@@ -16,14 +18,22 @@ import java.util.List;
 public class LocalSearch extends AbstractSMetaheuristic {
 
     List<NeighboringFunction> nfList;
+    int iterationCount;
 
     public LocalSearch(List<NeighboringFunction> nfList) {
         this.nfList = nfList;
+        terminalCondition = TerminalCondition.NullTC;
     }
+
+    public LocalSearch(List<NeighboringFunction> nfList, TerminalCondition tc) {
+        this.nfList = nfList;
+        this.terminalCondition = tc;
+    }
+
 
     @Override
     public int getIterationCount() {
-        return 0;
+        return iterationCount;
     }
 
     @Override
@@ -31,15 +41,24 @@ public class LocalSearch extends AbstractSMetaheuristic {
         Individual currentState = currentSolution;
         NeighboringFunction nf = nfList.get(RandUtil.randInt(nfList.size()));
 
-        while (true)
+        while (!terminalCondition.isSatisfied(this,problem))
         {
-
+            iterationCount++;
             currentState = nf.apply(problem,currentState);
 
             if (currentState.getCost()>= bestKnownCost)
                 return;
             updateBestIfNecessary(currentState.getRepresentation(),currentState.getCost());
+
+            fireIterationEvent(new BaseSIterationEvent(iterationCount,getNeighboringCount(),bestKnownCost,bestKnownSolution, currentSolution.getCost(), currentSolution.getRepresentation()));
+
         }
+    }
+
+    @Override
+    public void init(OptimizationProblem problem) {
+        super.init(problem);
+        iterationCount=0;
     }
 
     @Override
@@ -53,6 +72,6 @@ public class LocalSearch extends AbstractSMetaheuristic {
 
     @Override
     public String defaultName() {
-        return null;
+        return "LocalSearch";
     }
 }

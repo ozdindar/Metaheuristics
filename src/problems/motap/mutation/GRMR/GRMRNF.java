@@ -4,7 +4,7 @@ import base.NeighboringFunction;
 import base.OptimizationProblem;
 import problems.motap.IProcessor;
 import problems.motap.MOTAProblem;
-import problems.motap.Pair;
+import util.Pair;
 import representation.IntegerAssignment;
 import representation.base.Individual;
 import util.random.RandUtil;

@@ -6,18 +6,26 @@ import base.TerminalCondition;
 import exceptions.InvalidParameters;
 import exceptions.WrongIndividualType;
 import metaheuristic.AbstractMetaheuristic;
+import metaheuristic.BasePIterationEvent;
+import metaheuristic.BaseSIterationEvent;
 import metaheuristic.MetaHeuristic;
 import metaheuristic.ea.EAService;
 import metaheuristic.pso.base.PSOParticle;
-import metaheuristic.pso.base.PSOProblem;
+import metaheuristic.pso.base.ContinousProblem;
 import metaheuristic.pso.base.ParticleHandler;
 import metaheuristic.pso.base.Velocity;
 import problems.base.InitialSolutionGenerator;
+import representation.AgeingIndividual;
+import representation.ListPopulation;
+import representation.base.Individual;
+import representation.base.Population;
 import representation.base.Representation;
 import util.random.RandUtil;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by dindar.oz on 03.06.2015.
@@ -40,26 +48,42 @@ public class PSO extends AbstractMetaheuristic {
     ParticleHandler particleHandler;
     private long maxNeighboring;
     private TerminalCondition terminalCondition;
+    private boolean noRestart=true;
+
+    int stallCounter;
+    int stallThreshold;
+
+    Representation previousBest;
+
+    private ExplorationEnhancer explorationEnhancer;
 
     public PSO(ParticleHandler particleHandler, double w, double siP, double siG, int swarmSize, TerminalCondition tc) {
+        this(particleHandler,w,siP,siG,swarmSize,tc,0);
+    }
+
+    public PSO(ParticleHandler particleHandler, double w, double siP, double siG, int swarmSize, TerminalCondition tc,int stallThreshold) {
         this.w = w;
         this.siP = siP;
         this.siG = siG;
         this.particleHandler = particleHandler;
         this.swarmSize = swarmSize;
         this.terminalCondition = tc;
+        this.stallThreshold=stallThreshold;
     }
 
+    public void setExplorationEnhancer(ExplorationEnhancer explorationEnhancer) {
+        this.explorationEnhancer = explorationEnhancer;
+    }
 
     @Override
     public int getIterationCount() {
-        return 0;
+        return iterationCount;
     }
 
     @Override
     public void perform(OptimizationProblem problem, InitialSolutionGenerator solutionGenerator) {
-        reHopeCount =0;
-        PSOProblem psoProblem = (PSOProblem) problem;
+        init(problem);
+        ContinousProblem psoProblem = (ContinousProblem) problem;
         List<Representation> initialPositions = solutionGenerator.generate(problem,swarmSize);
         swarm = generateInitialParticles(psoProblem, initialPositions);
 
@@ -73,20 +97,58 @@ public class PSO extends AbstractMetaheuristic {
                     bestKnownCost = problem.cost(bestKnownSolution);
                 updateBestIfNecessary(psoParticle.getPosition().clone(),psoParticle.getCost());
             }
+
+            updatePreviousBest();
+
             if (noHopeCase())
             {
                 reHopeCount++;
-                reHope(psoProblem);
+                reHope(psoProblem,solutionGenerator);
                 //System.out.println("NOHOPE");
             }
+
+            PSOParticle best = swarm.stream().min(Comparator.comparingDouble(PSOParticle::getCost)).get();
+            if (stallThreshold>0 && explorationEnhancer != null   && stallCounter>stallThreshold)
+            {
+                explorationEnhancer.apply(psoProblem,iterationCount,swarm,particleHandler);
+                updateBestIfNecessary(best.getPosition(),best.getCost());
+                stallCounter=0;
+            }
+
             iterationCount++;
 
-            fireIterationEvent(new PSOIterationEvent(iterationCount,getNeighboringCount(),bestKnownCost,bestKnownSolution));
-            //System.out.println("REHOPE: "+reHopeCount+"  Iteration Count: " + iterationCount + " Cost: " + bestKnownCost);
+            if (!listeners.isEmpty()) {
+                fireIterationEvent(new BasePIterationEvent(iterationCount, getNeighboringCount(), best.getCost(), best.getBestKnownPosition(),swarmAsPopulation()));
+            }
         }
 
-        printBest();
+        //printBest();
 
+    }
+
+    private void updatePreviousBest() {
+        if (previousBest==null) {
+            previousBest = bestKnownSolution;
+            stallCounter=0;
+            return;
+        }
+        if (previousBest.equals(bestKnownSolution))
+        {
+            stallCounter++;
+        }
+        else{
+            stallCounter=0;
+            previousBest = bestKnownSolution;
+        }
+    }
+
+    @Override
+    public void init(OptimizationProblem problem) {
+        super.init(problem);
+        iterationCount=0;
+        stallCounter=0;
+        previousBest= null;
+        reHopeCount=0;
     }
 
     @Override
@@ -94,7 +156,7 @@ public class PSO extends AbstractMetaheuristic {
         return "PSO";
     }
 
-    private void reHope(PSOProblem problem) {
+    private void reHope(ContinousProblem problem, InitialSolutionGenerator solutionGenerator) {
         /*if (reHopeCount>0 && reHopeCount%5==0)
         {
             bestKnownPosition = null;
@@ -105,6 +167,8 @@ public class PSO extends AbstractMetaheuristic {
     }
 
     private boolean noHopeCase() {
+        if (noRestart)
+            return false;
         int diversity = 0;
         for (int i=0;i<swarm.size();i++)
         {
@@ -133,7 +197,7 @@ public class PSO extends AbstractMetaheuristic {
 //        return ( ((maxNeighboring>0)&&(neighboringCount>maxNeighboring)) || ((minCost>=0)&&(bestKnownCost<=minCost)));
 //    }
 
-    private List<PSOParticle> generateInitialParticles(PSOProblem problem, List<Representation> initialPositions)
+    private List<PSOParticle> generateInitialParticles(ContinousProblem problem, List<Representation> initialPositions)
     {
         List<PSOParticle> pList = new ArrayList<PSOParticle>();
         for (int i=0; i<initialPositions.size();i++ )
@@ -148,7 +212,7 @@ public class PSO extends AbstractMetaheuristic {
         return pList;
     }
 
-    public void updateParticle(PSOProblem psoProblem, PSOParticle psoParticle,double w,double siG,double siP) {
+    public void updateParticle(ContinousProblem psoProblem, PSOParticle psoParticle, double w, double siG, double siP) {
 
         updateVelocity(psoParticle,w,siG,siP);
 
@@ -185,7 +249,7 @@ public class PSO extends AbstractMetaheuristic {
 
     }
 
-    public PSOParticle generateInitialParticle(PSOProblem problem, Representation initialPosition) {
+    public PSOParticle generateInitialParticle(ContinousProblem problem, Representation initialPosition) {
 
         Class c = particleHandler.getRepresentationClass();
         if (!( c.isInstance(initialPosition )))
@@ -211,5 +275,18 @@ public class PSO extends AbstractMetaheuristic {
 
 
         return new PSO(particleHandler,w,siP,siG,swarmSize, tc);
+    }
+
+    public Population swarmAsPopulation()
+    {
+        List<Individual> individuals = swarm.stream().
+                map(pp->new AgeingIndividual(pp.getPosition(),pp.getCost())).
+                collect(Collectors.toList());
+
+        return new ListPopulation(individuals);
+    }
+
+    public void setStallThreshold(int threshold) {
+        stallThreshold =threshold;
     }
 }

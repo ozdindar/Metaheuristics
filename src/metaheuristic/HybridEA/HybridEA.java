@@ -13,9 +13,9 @@ import metaheuristic.ea.crossover.SimpleCrossOverStrategy;
 import metaheuristic.ea.mutation.SimpleMutationStrategy;
 import metaheuristic.ea.victimselector.SimpleVictimSelector;
 import problems.base.InitialSolutionGenerator;
+import representation.AgeingIndividual;
 import representation.CostBasedComparator;
 import representation.ListPopulation;
-import representation.SimpleIndividual;
 import representation.base.Individual;
 import representation.base.Population;
 import representation.base.Representation;
@@ -69,7 +69,7 @@ public class HybridEA extends AbstractMetaheuristic {
         Population initialPopulation = new ListPopulation();
         for(Representation r: initialStates)
         {
-            Individual i = new SimpleIndividual(r,problem.cost(r));
+            Individual i = new AgeingIndividual(r,problem.cost(r));
             initialPopulation.add(i);
             updateBestIfNecessary(i.getRepresentation(),i.getCost());
             increaseNeighboringCount();
@@ -79,7 +79,7 @@ public class HybridEA extends AbstractMetaheuristic {
 
 
 
-    public Population generateNextGeneration(OptimizationProblem problem, Population oldGen) {
+    public Population generateNextGeneration(OptimizationProblem problem, Population oldGen, InitialSolutionGenerator solutionGenerator) {
         applyCrossOver(problem, oldGen);
         if (mutationOperators!=null)
             mutationStrategy.applyMutations(problem, oldGen,mutationOperators);
@@ -143,9 +143,9 @@ public class HybridEA extends AbstractMetaheuristic {
 
         while (!terminalCondition.isSatisfied(this,population,problem))
         {
-            Population nextGen = generateNextGeneration(problem,population);
+            Population nextGen = generateNextGeneration(problem,population,solutionGenerator);
 
-            population = improvePopulation(problem,nextGen);
+            population = improvePopulation(problem,nextGen,solutionGenerator);
 
             iterationCount++;
 
@@ -156,7 +156,7 @@ public class HybridEA extends AbstractMetaheuristic {
 
             Individual best = population.getBest();
             updateBestIfNecessary(best.getRepresentation(),best.getCost());
-            fireIterationEvent(new EAIterationEvent(iterationCount,getNeighboringCount(), best.getCost(),best.getRepresentation()));
+            fireIterationEvent(new EAIterationEvent(iterationCount,getNeighboringCount(), best.getCost(),best.getRepresentation(),population.getBestCost(),population.getBest().getRepresentation()));
             //System.out.println(iterationCount+"-iteration: Average-F:"+ PopulationUtil.averageFitness(population.getIndividuals())+"  Best-F:"+ population.getBest());
         }
 
@@ -164,18 +164,18 @@ public class HybridEA extends AbstractMetaheuristic {
 
     }
 
-    private Population improvePopulation(OptimizationProblem problem,Population population) {
+    private Population improvePopulation(OptimizationProblem problem,Population population, InitialSolutionGenerator isg) {
         Population improved = new ListPopulation();
         for (Individual i:population.getIndividuals())
         {
             localSearch.setCurrentSolution(i);
-            localSearch.perform(problem,solutionGenerator);
-            Individual ii = new SimpleIndividual(localSearch.getBestKnownSolution(),localSearch.getBestKnownCost());
+            localSearch.perform(problem,isg);
+            Individual ii = new AgeingIndividual(localSearch.getBestKnownSolution(),localSearch.getBestKnownCost());
 
             while (improved.contains(ii))
             {
                 List<Representation> rs = solutionGenerator.generate(problem,1);
-                ii = new SimpleIndividual(rs.get(0),problem.cost(rs.get(0)));
+                ii = new AgeingIndividual(rs.get(0),problem.cost(rs.get(0)));
             }
             improved.add(ii);
             increaseNeighboringCount();

@@ -84,6 +84,7 @@ public class SOS extends AbstractMetaheuristic {
     {
         childDiameter = childDiameter*problem.maxDistance();
         parentPopulation.add(generateInitialPopulation(problem, solutionGenerator,initialPopulationSize));
+        this.solutionGenerator = solutionGenerator;
 
         while (!terminalCondition.isSatisfied(this,problem))
         {

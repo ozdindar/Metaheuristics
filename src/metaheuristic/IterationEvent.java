@@ -1,5 +1,6 @@
 package metaheuristic;
 
+import representation.base.Population;
 import representation.base.Representation;
 
 /**
@@ -10,5 +11,6 @@ public interface IterationEvent {
     long getNeighboringCount();
     double getBestCost();
     Representation getBestSolution();
-    String toString();
+    Representation getCurrentSolution();
+    double getCurrentCost();
 }

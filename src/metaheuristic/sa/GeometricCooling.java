@@ -14,4 +14,9 @@ public class GeometricCooling implements CoolingSchedule{
     public double updateTemperature(double t) {
         return t*alpha;
     }
+
+    @Override
+    public void init() {
+
+    }
 }

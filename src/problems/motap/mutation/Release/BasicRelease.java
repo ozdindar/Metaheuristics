@@ -3,7 +3,7 @@ package problems.motap.mutation.Release;
 import base.OptimizationProblem;
 import problems.motap.IProcessor;
 import problems.motap.MOTAProblem;
-import problems.motap.Pair;
+import util.Pair;
 import problems.motap.mutation.GRMR.Reassignment;
 import problems.motap.mutation.GRMR.ResourceType;
 import representation.IntegerAssignment;

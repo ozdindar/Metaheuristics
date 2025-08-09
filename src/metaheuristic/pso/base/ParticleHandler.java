@@ -6,5 +6,5 @@ package metaheuristic.pso.base;
 public interface ParticleHandler {
 
     Class getRepresentationClass();
-    Velocity generateInitialVelocity(PSOProblem problem, int dimensionCount);
+    Velocity generateInitialVelocity(ContinousProblem problem, int dimensionCount);
 }

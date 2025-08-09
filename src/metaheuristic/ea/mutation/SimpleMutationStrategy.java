@@ -3,6 +3,7 @@ package metaheuristic.ea.mutation;
 import base.OptimizationProblem;
 import metaheuristic.ea.base.MutationOperator;
 import metaheuristic.ea.base.MutationStrategy;
+import representation.AgeingIndividual;
 import representation.SimpleIndividual;
 import representation.base.Individual;
 import representation.base.Population;
@@ -41,7 +42,7 @@ public class SimpleMutationStrategy implements MutationStrategy {
 
                 Representation mutantRep = mutationOperators.get(mo).apply(problem, victim.getRepresentation());
 
-                Individual mutant = new SimpleIndividual(mutantRep, problem.cost(mutantRep));
+                Individual mutant = new AgeingIndividual(mutantRep, problem.cost(mutantRep));
 
                 if (allowRepetition || !population.contains(mutant)) {
                     population.remove(victim);

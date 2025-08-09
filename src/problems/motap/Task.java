@@ -2,6 +2,8 @@ package problems.motap;
 
 
 
+import util.Pair;
+
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;

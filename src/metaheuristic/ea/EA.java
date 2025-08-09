@@ -4,15 +4,16 @@ import base.OptimizationProblem;
 import base.TerminalCondition;
 import exceptions.InvalidParameters;
 import metaheuristic.AbstractMetaheuristic;
+import metaheuristic.BasePIterationEvent;
 import metaheuristic.MetaHeuristic;
 import metaheuristic.ea.base.*;
 import metaheuristic.ea.crossover.SimpleCrossOverStrategy;
 import metaheuristic.ea.mutation.SimpleMutationStrategy;
 import metaheuristic.ea.victimselector.SimpleVictimSelector;
 import problems.base.InitialSolutionGenerator;
+import representation.AgeingIndividual;
 import representation.CostBasedComparator;
 import representation.ListPopulation;
-import representation.SimpleIndividual;
 import representation.base.Individual;
 import representation.base.Population;
 import representation.base.Representation;
@@ -34,14 +35,15 @@ public class EA extends AbstractMetaheuristic {
     VictimSelector victimSelector = new SimpleVictimSelector();
 
 
-    int immigrationPeriod=100;
+    int immigrationPeriod=0; // 0 means no immigration
     int immigrantCount = 20;
 
-    private int initialPopulationSize = 50; ;
+    private int initialPopulationSize = 50;
 
-    public void setInitialPopulationSize(int initialPopulationSize) {
-        this.initialPopulationSize = initialPopulationSize;
-    }
+    int ageingThreshold=0; // 0 means no ageing
+
+
+
 
     public EA() {
      }
@@ -57,13 +59,20 @@ public class EA extends AbstractMetaheuristic {
         this.terminalCondition = terminalCondition;
     }
 
+    public void setInitialPopulationSize(int initialPopulationSize) {
+        this.initialPopulationSize = initialPopulationSize;
+    }
+
+    public void setAgeingThreshold(int ageingThreshold) {
+        this.ageingThreshold = ageingThreshold;
+    }
 
     public Population generateInitialPopulation(OptimizationProblem problem, InitialSolutionGenerator solutionGenerator, int c) {
         List<Representation> initialStates = solutionGenerator.generate(problem,c);
         Population initialPopulation = new ListPopulation();
         for(Representation r: initialStates)
         {
-            Individual i = new SimpleIndividual(r,problem.cost(r));
+            Individual i = new AgeingIndividual(r,problem.cost(r));
             initialPopulation.add(i);
             updateBestIfNecessary(i.getRepresentation(),i.getCost());
             increaseNeighboringCount();
@@ -92,7 +101,7 @@ public class EA extends AbstractMetaheuristic {
                 if (!oldGen.contains(offspring))
                 {
                     oldGen.remove(victims.get(0));
-                    oldGen.add(offspring);
+                    oldGen.add(new AgeingIndividual(offspring));
                     victims.remove(0);
                 }
             }
@@ -128,10 +137,18 @@ public class EA extends AbstractMetaheuristic {
     }
 
     @Override
-    public void perform(OptimizationProblem problem, InitialSolutionGenerator solutionGenerator) {
+    public void init(OptimizationProblem problem) {
+        super.init(problem);
         iterationCount=0;
-        this.solutionGenerator = solutionGenerator;
+    }
+
+    @Override
+    public void perform(OptimizationProblem problem, InitialSolutionGenerator solutionGenerator) {
+        init(problem);
+
         Population population = generateInitialPopulation(problem,solutionGenerator,initialPopulationSize);
+
+
 
         while (!terminalCondition.isSatisfied(this,population,problem))
         {
@@ -142,12 +159,21 @@ public class EA extends AbstractMetaheuristic {
 
             if (immigrationPeriod>0 && (iterationCount %immigrationPeriod ==0) )
             {
-                acceptImmigrants(problem,population);
+                acceptImmigrants(problem,population,solutionGenerator);
+            }
+
+            if (ageingThreshold>0)// Ageing Enabled?
+            {
+                performAgeing(problem,solutionGenerator,population);
             }
 
             Individual best = population.getBest();
             updateBestIfNecessary(best.getRepresentation(),best.getCost());
-            fireIterationEvent(new EAIterationEvent(iterationCount,getNeighboringCount(), best.getCost(),best.getRepresentation()));
+            fireIterationEvent(new BasePIterationEvent(iterationCount,
+                                                    getNeighboringCount(),
+                                                    best.getCost(),
+                                                    best.getRepresentation(),
+                                                    population));
             //System.out.println(iterationCount+"-iteration: Average-F:"+ PopulationUtil.averageFitness(population.getIndividuals())+"  Best-F:"+ population.getBest());
         }
 
@@ -155,7 +181,17 @@ public class EA extends AbstractMetaheuristic {
 
     }
 
-    private void acceptImmigrants(OptimizationProblem problem, Population population) {
+    private void performAgeing(OptimizationProblem problem, InitialSolutionGenerator solutionGenerator, Population population) {
+        population.forEach(Individual::age);
+        population.removeIf(i-> i.getAge()>ageingThreshold);
+        int removed = initialPopulationSize-population.size();
+        if (removed>0) {
+            Population newOnes = generateInitialPopulation(problem, solutionGenerator, removed);
+            population.add(newOnes);
+        }
+    }
+
+    private void acceptImmigrants(OptimizationProblem problem, Population population, InitialSolutionGenerator solutionGenerator) {
         Population immigrants = generateInitialPopulation(problem, solutionGenerator, immigrantCount);
         population.sort(new CostBasedComparator());
         population = population.subPopulation(0,population.size()-immigrantCount);

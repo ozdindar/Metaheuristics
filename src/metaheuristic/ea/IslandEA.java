@@ -10,6 +10,7 @@ import metaheuristic.ea.crossover.SimpleCrossOverStrategy;
 import metaheuristic.ea.mutation.SimpleMutationStrategy;
 import metaheuristic.ea.victimselector.SimpleVictimSelector;
 import problems.base.InitialSolutionGenerator;
+import representation.AgeingIndividual;
 import representation.CostBasedComparator;
 import representation.ListPopulation;
 import representation.SimpleIndividual;
@@ -74,7 +75,7 @@ public class IslandEA extends AbstractMetaheuristic {
         Population initialPopulation = new ListPopulation();
         for(Representation r: initialStates)
         {
-            Individual i = new SimpleIndividual(r,problem.cost(r));
+            Individual i = new AgeingIndividual(r,problem.cost(r));
             initialPopulation.add(i);
             updateBestIfNecessary(i.getRepresentation(),i.getCost());
             increaseNeighboringCount();
@@ -182,7 +183,7 @@ public class IslandEA extends AbstractMetaheuristic {
 
             Individual best = getGlobalBest();
             updateBestIfNecessary(best.getRepresentation(),best.getCost());
-            fireIterationEvent(new EAIterationEvent(iterationCount,getNeighboringCount(), best.getCost(),best.getRepresentation()));
+            fireIterationEvent(new EAIterationEvent(iterationCount,getNeighboringCount(), best.getCost(),best.getRepresentation(),0.0,null));
 
         }
     		

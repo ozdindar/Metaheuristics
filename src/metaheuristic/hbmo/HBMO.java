@@ -4,8 +4,8 @@ import base.OptimizationProblem;
 import base.TerminalCondition;
 import exceptions.InvalidParameters;
 import metaheuristic.AbstractMetaheuristic;
+import metaheuristic.BaseSIterationEvent;
 import metaheuristic.MetaHeuristic;
-import metaheuristic.ea.EAIterationEvent;
 import metaheuristic.ea.EAService;
 import metaheuristic.ea.base.CrossOverOperator;
 import metaheuristic.ea.base.MutationOperator;
@@ -116,7 +116,7 @@ public class HBMO extends AbstractMetaheuristic implements IslandModul
 
 
             iterationCount++;
-            fireIterationEvent(new EAIterationEvent(iterationCount,getNeighboringCount(), bestKnownCost,bestKnownSolution));
+            fireIterationEvent(new BaseSIterationEvent(iterationCount,getNeighboringCount(), bestKnownCost,bestKnownSolution,0.0,null));
 
         }
         printBest();

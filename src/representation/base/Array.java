@@ -16,7 +16,7 @@ public interface Array<T> {
     public int getLength();
     public boolean exists(T v);
     public int firstOf(T v);
-    public Array cloneArray();
+    public Array<T> cloneArray();
 
 
 }

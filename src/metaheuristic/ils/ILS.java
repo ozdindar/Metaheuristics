@@ -3,7 +3,8 @@ package metaheuristic.ils;
 import base.OptimizationProblem;
 import base.TerminalCondition;
 import metaheuristic.AbstractSMetaheuristic;
-import metaheuristic.tabu.TabuIterationEvent;
+import metaheuristic.BaseSIterationEvent;
+import metaheuristic.MetaHeuristicListener;
 import problems.base.InitialSolutionGenerator;
 import representation.SimpleIndividual;
 
@@ -40,16 +41,16 @@ public class ILS extends AbstractSMetaheuristic {
             localSearch.perform(problem,solutionGenerator);
             currentSolution = new SimpleIndividual(localSearch.getBestKnownSolution(),localSearch.getBestKnownCost());
             updateBestIfNecessary(currentSolution.getRepresentation(),currentSolution.getCost());
-            iterationCount++;
-            System.out.println(iterationCount);
+            iterationCount += localSearch.getIterationCount();
+
             increaseNeighboringCount((int) localSearch.getNeighboringCount());
 
             perturbator.perturbate(problem,currentSolution);
 
             localSearch.setCurrentSolution(currentSolution);
-            fireIterationEvent(new TabuIterationEvent(iterationCount,getNeighboringCount(),bestKnownCost,bestKnownSolution));
+            fireIterationEvent(new BaseSIterationEvent(iterationCount,getNeighboringCount(),bestKnownCost,bestKnownSolution, currentSolution.getCost(), currentSolution.getRepresentation()));
         }
-
+        //printBest();
     }
 
     @Override
@@ -76,8 +77,9 @@ public class ILS extends AbstractSMetaheuristic {
         iterationCount=0;
     }
 
-
-
-
-
+    @Override
+    public void addListener(MetaHeuristicListener listener) {
+        super.addListener(listener);
+        localSearch.addListener(listener);
+    }
 }

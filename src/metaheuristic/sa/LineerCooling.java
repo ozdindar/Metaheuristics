@@ -14,4 +14,9 @@ public class LineerCooling implements CoolingSchedule {
     public double updateTemperature(double t) {
         return t-delta;
     }
+
+    @Override
+    public void init() {
+
+    }
 }

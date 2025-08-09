@@ -2,7 +2,7 @@ package problems.movingpeaks;
 
 
 import base.DynamicOptimizationProblem;
-import metaheuristic.pso.base.PSOProblem;
+import metaheuristic.pso.base.ContinousProblem;
 import representation.DoubleVector;
 import representation.base.Representation;
 
@@ -14,7 +14,7 @@ import java.util.Random;
  */
 
 
-public class MovingPeaks implements DynamicOptimizationProblem,PSOProblem {
+public class MovingPeaks implements DynamicOptimizationProblem, ContinousProblem {
 
     MP_Scenario scenario;
 
@@ -524,7 +524,7 @@ public class MovingPeaks implements DynamicOptimizationProblem,PSOProblem {
 
     @Override
     public double maxDistance() {
-        return Math.sqrt(scenario.getGeno_size())*(getUpperBound()-getLowerBound());
+        return Math.sqrt(scenario.getGeno_size())*(getUpperBound(0)-getLowerBound(0));
     }
 
     @Override
@@ -533,12 +533,12 @@ public class MovingPeaks implements DynamicOptimizationProblem,PSOProblem {
     }
 
     @Override
-    public double getUpperBound() {
+    public double getUpperBound(int d) {
         return scenario.getMaxcoordinate();
     }
 
     @Override
-    public double getLowerBound() {
+    public double getLowerBound(int d) {
         return scenario.getMincoordinate();
     }
 } //MovingPeaks

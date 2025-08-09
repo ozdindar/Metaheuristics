@@ -4,6 +4,7 @@ import base.OptimizationProblem;
 import base.TerminalCondition;
 import metaheuristic.ea.terminalcondition.OrCompoundTC;
 import problems.base.InitialSolutionGenerator;
+import representation.AgeingIndividual;
 import representation.SimpleIndividual;
 import representation.base.Individual;
 import representation.base.Representation;
@@ -43,6 +44,9 @@ public abstract class AbstractSMetaheuristic extends AbstractMetaheuristic {
         else updateBestIfNecessary(currentSolution.getRepresentation(),currentSolution.getCost());
 
         _perform(problem,solutionGenerator);
+
+        if (debugTrace)
+            logEnd();
     }
 
     protected abstract void _perform(OptimizationProblem problem,InitialSolutionGenerator solutionGenerator);
@@ -61,7 +65,7 @@ public abstract class AbstractSMetaheuristic extends AbstractMetaheuristic {
         updateBestIfNecessary(r, cost);
         increaseNeighboringCount();
 
-        return new SimpleIndividual(r, cost);
+        return new AgeingIndividual(r, cost);
     }
 
     public abstract AbstractSMetaheuristic clone();
