@@ -29,6 +29,7 @@ import problems.bbob.mutation.BBOBPerturbator;
 import problems.bbob.mutation.BBOBRandomShift;
 import representation.base.Population;
 import representation.base.Representation;
+import tmp.PHMPlotter;
 
 import java.util.*;
 import java.util.function.Function;
@@ -119,7 +120,7 @@ public class PHMBuilder implements DataBuilder<PHM> {
     private static AbstractMetaheuristic createGA() {
         MutationOperator mo = new BBOBRandomShift();
         CrossOverOperator co = new BBOBOneCutCO();
-        TerminalCondition tc = new IterationBasedTC(10000);
+        TerminalCondition tc = new IterationBasedTC(100000);
 
         EA ea = new EA(Arrays.asList(co),
                 Arrays.asList(mo),
@@ -164,10 +165,10 @@ public class PHMBuilder implements DataBuilder<PHM> {
 
         AbstractMetaheuristic alg = createGA();
 
-        BBOBProblem problem = new Sphere(3);
+        BBOBProblem problem = new Sphere(20);
         double[] ubounds = IntStream.range(0,problem.getDimension()).mapToDouble(problem::upperBound).toArray();
         double[] lbounds = IntStream.range(0,problem.getDimension()).mapToDouble(problem::lowerBound).toArray();
-        int slotCount =3;
+        int slotCount =10;
         DoubleVectorPartitioner ssp = new DoubleVectorPartitioner(ubounds,lbounds,slotCount);
 
         InitialSolutionGenerator isg = new BBOBRandomISG();
@@ -182,17 +183,16 @@ public class PHMBuilder implements DataBuilder<PHM> {
 
         System.out.println("Constructing visualizer..");
 
-        Map<String, Function<PHMNode,Number>> extractors = new HashMap<>();
-        extractors.put("VC", PHMNode::getVisitCount);
-        extractors.put("TC", PHMNode::getTouchCount);
-
+/*
         HistogramPlotter.createMultiHistogram(
                                 phm.nodeMap,
                                 extractors,
                                 "Visit&Touch per Node",
                                 "NodeID",
                                 "VC-TC",
-                                "./output/Histogram-VC-TC.png");
+                                "./output/Histogram-VC-TC.png");*/
+
+        PHMPlotter.plotVisitedNodesBetweenIterations(phm,0.01);
     }
 
 

@@ -3,6 +3,8 @@ package experiments;
 import base.OptimizationProblem;
 import base.TerminalCondition;
 import experiments.datacollectors.phm.TouchNodeCountDC;
+import experiments.datacollectors.phm.VCTCTimePlotDC;
+import experiments.datacollectors.phm.VCTimePlotDC;
 import experiments.datacollectors.phm.VisitNodeCountDC;
 import experiments.datacollectors.stn.*;
 import metaheuristic.AbstractMetaheuristic;
@@ -185,7 +187,10 @@ public class Experiment {
                 new StallRateDC()
         );
 
-        List<DataCollector> phmCollectors = Arrays.asList(new VisitNodeCountDC(),new TouchNodeCountDC());
+        List<DataCollector> phmCollectors = Arrays.asList(
+                new VisitNodeCountDC(),
+                new TouchNodeCountDC(),
+                new VCTCTimePlotDC("./output/vcplot",0.1));
 
 
         List<Pair<DataBuilder,List<DataCollector>>> builderList = Arrays.asList(

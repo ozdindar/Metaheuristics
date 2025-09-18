@@ -1,5 +1,6 @@
 package metaheuristic.ea;
 
+import base.NeighboringFunction;
 import base.OptimizationProblem;
 import base.TerminalCondition;
 import exceptions.InvalidParameters;
@@ -34,6 +35,11 @@ public class EA extends AbstractMetaheuristic {
     ParentSelector parentSelector;
     VictimSelector victimSelector = new SimpleVictimSelector();
 
+    NeighboringFunction localSearch;
+
+
+
+    private int localSearchCount=0;
 
     int immigrationPeriod=0; // 0 means no immigration
     int immigrantCount = 20;
@@ -41,7 +47,6 @@ public class EA extends AbstractMetaheuristic {
     private int initialPopulationSize = 50;
 
     int ageingThreshold=0; // 0 means no ageing
-
 
 
 
@@ -57,6 +62,14 @@ public class EA extends AbstractMetaheuristic {
         this.mutationOperators = mutationOperators;
         this.parentSelector = parentSelector;
         this.terminalCondition = terminalCondition;
+    }
+
+    public void setLocalSearch(NeighboringFunction nf)
+    {
+        localSearch = nf;
+    }
+    public void setLocalSearchCount(int localSearchCount) {
+        this.localSearchCount = localSearchCount;
     }
 
     public void setInitialPopulationSize(int initialPopulationSize) {
@@ -167,6 +180,11 @@ public class EA extends AbstractMetaheuristic {
                 performAgeing(problem,solutionGenerator,population);
             }
 
+            if (localSearch!=null && localSearchCount>0 )
+            {
+                applyLocalSearch(problem, population);
+            }
+
             Individual best = population.getBest();
             updateBestIfNecessary(best.getRepresentation(),best.getCost());
             fireIterationEvent(new BasePIterationEvent(iterationCount,
@@ -174,11 +192,33 @@ public class EA extends AbstractMetaheuristic {
                                                     best.getCost(),
                                                     best.getRepresentation(),
                                                     population));
+
+
+            trimPopulation(problem,population);
             //System.out.println(iterationCount+"-iteration: Average-F:"+ PopulationUtil.averageFitness(population.getIndividuals())+"  Best-F:"+ population.getBest());
         }
 
        // printBest();
 
+    }
+
+    private void trimPopulation(OptimizationProblem problem, Population population) {
+        int victimCount= population.size()-initialPopulationSize;
+        if (victimCount<=0)
+            return;
+
+        List<Individual> victims = victimSelector.selectVictims(problem,population.getIndividuals(),victimCount);
+        population.removeAll(victims);
+    }
+
+    private void applyLocalSearch(OptimizationProblem problem, Population population) {
+        population.sort(new CostBasedComparator());
+
+        for (int i = 0; i < localSearchCount; i++) {
+            Individual ind = population.get(i);
+            List<Individual> improved = localSearch.applyAll(problem,ind);
+            population.add(improved);
+        }
     }
 
     private void performAgeing(OptimizationProblem problem, InitialSolutionGenerator solutionGenerator, Population population) {
