@@ -7,4 +7,7 @@ import metrics.partitioning.SearchSpacePartitioner;
 public interface DataBuilder<T> extends MetaHeuristicListener {
     T getData();
     void init(OptimizationProblem problem, SearchSpacePartitioner ssp);
+
+    void updateData(SearchSpacePartitioner ssp);
+
 }

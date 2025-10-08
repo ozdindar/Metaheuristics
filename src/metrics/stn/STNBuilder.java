@@ -65,6 +65,11 @@ public class STNBuilder implements DataBuilder<STN> {
         previousRep=null;
     }
 
+    @Override
+    public void updateData(SearchSpacePartitioner ssp) {
+        stn = buildFromExisting(stn,ssp);
+    }
+
     public void setTrackGlobalBest(boolean trackGlobalBest) {
         this.trackGlobalBest = trackGlobalBest;
     }

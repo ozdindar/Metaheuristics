@@ -11,6 +11,7 @@ public interface MetaHeuristic {
     public String generateResultString();
     public int getIterationCount();
     public long getNeighboringCount();
+
     public void perform(OptimizationProblem problem, InitialSolutionGenerator solutionGenerator);
     public void init(OptimizationProblem problem);
 

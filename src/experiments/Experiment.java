@@ -19,6 +19,7 @@ import metaheuristic.pso.PSO;
 import metrics.DataBuilder;
 import metrics.DataCollector;
 import metrics.partitioning.DoubleVectorPartitioner;
+import metrics.partitioning.NullSSP;
 import metrics.partitioning.SearchSpacePartitioner;
 import metrics.populationheatmap.PHMBuilder;
 import metrics.stn.STNBuilder;
@@ -52,9 +53,21 @@ public class Experiment {
 
     private void runOnce( ExperimentCase experimentCase) {
 
+        SearchSpacePartitioner ssp = new NullSSP();
+        if (!(experimentCase.getSsp() instanceof DiscreteSSP))
+        {
+            ssp = experimentCase.getSsp();
+        }
         dataCollectors.forEach(p->p.first.init(experimentCase.getProblem(),experimentCase.getSsp()));
 
+
         experimentCase.getAlg().perform((OptimizationProblem) experimentCase.getProblem(), experimentCase.getIsg());
+
+        if (experimentCase.getSsp() instanceof DiscreteSSP)
+        {
+            dataCollectors.forEach(p->p.first.updateData(experimentCase.getSsp()));
+        }
+
 
         for (Pair<DataBuilder,List<DataCollector>> builderPair: dataCollectors)
         {

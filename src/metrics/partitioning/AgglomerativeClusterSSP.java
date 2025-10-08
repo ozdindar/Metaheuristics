@@ -1,11 +1,12 @@
 package metrics.partitioning;
 
+import experiments.DiscreteSSP;
 import representation.BinaryString;
 import representation.base.Representation;
 
 import java.util.*;
 
-public class AgglomerativeClusterSSP implements SearchSpacePartitioner{
+public class AgglomerativeClusterSSP implements DiscreteSSP {
 
     private static int hammingDistance(String a, String b) {
         int dist = 0;

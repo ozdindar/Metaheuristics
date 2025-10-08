@@ -66,6 +66,11 @@ public class PHMBuilder implements DataBuilder<PHM> {
     }
 
     @Override
+    public void updateData(SearchSpacePartitioner ssp) {
+        phm = buildFromExisting(phm,ssp);
+    }
+
+    @Override
     public void onIterationEvent(IterationEvent event) {
         assert event instanceof  PIterationEvent : "PHM can be built by only PIterationEvent";
         PIterationEvent pEvent = (PIterationEvent) event;
@@ -90,17 +95,17 @@ public class PHMBuilder implements DataBuilder<PHM> {
      * ! It assumes that the partitioning (ssp) is more general than the existing
      * ! such that every solution in one node in the existing will be in the same node
      * ! in the new one
-     * @param stn
+     * @param phm
      * @param ssp
      * @return
      */
-    public static PHM buildFromExisting(PHM stn, SearchSpacePartitioner ssp)
+    public static PHM buildFromExisting(PHM phm, SearchSpacePartitioner ssp)
     {
-        Collection<PHMNode> nodes = stn.getNodes();
+        Collection<PHMNode> nodes = phm.getNodes();
         PHM newPHM = new PHM();
-        newPHM.bestRep = stn.getBestRep();
-        newPHM.bestCost= stn.getBestCost();
-        newPHM.iteration = stn.iteration();
+        newPHM.bestRep = phm.getBestRep();
+        newPHM.bestCost= phm.getBestCost();
+        newPHM.iteration = phm.iteration();
 
         for (PHMNode node:nodes)
         {
